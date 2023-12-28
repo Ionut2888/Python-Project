@@ -160,18 +160,25 @@ def most_active_hour_by_app_and_log_type(log_entries):
         hour = int(time.split(':')[0])
         activity_counts[hour][app_name][log_type] += 1
 
-    print("\nMost Active Hour by App and Log Type (Sorted by App Type):")
+    print("\nMost Active Hour by App and Log Type:")
     for app_name in sorted(set(entry[1] for entry in log_entries)):
-        for hour, log_counts in activity_counts.items():
-            if app_name in log_counts:
-                for log_type, count in log_counts[app_name].items():
-                    if count == max(log_counts[app_name].values()):
-                        print(f"Hour {hour:02d}: App={app_name}, Log Type={log_type}, Count={count}")
+        for log_type in ['INFO', 'ERROR', 'DEBUG']:
+            log_counts = {hour: activity_counts[hour][app_name][log_type] for hour in activity_counts.keys()}
+            max_hour = max(activity_counts.keys(), key=lambda h: log_counts[h])
+
+            start_time = "{:02d}:00:00".format(max_hour)
+            end_time = "{:02d}:59:00".format(max_hour)
+
+            print(f"Hour={start_time}-{end_time}, App={app_name}, Log Type={log_type}, Count={log_counts[max_hour]}")
+
+
+
+
 
 def main():
     filename = 'output.txt'
     log_entries = count_logs(filename)
-    #requirmets
+    #requirments
     count_and_print_logs(log_entries)
     average_successful_run_time(log_entries)
     count_failures(log_entries)
