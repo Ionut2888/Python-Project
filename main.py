@@ -56,18 +56,21 @@ def count_and_print_logs(log_entries):
                 print(f"{log} {app_name}: {count} logs")
 #req2
 def average_successful_run_time(log_entries):
-    info_logs = [(log_type, app_name, duration) for log_type, app_name, _, action, duration in log_entries
-                 if log_type == 'INFO' and app_name not in ['SYSTEM', ''] and duration is not None]
+    app_logs = defaultdict(list)
 
-    if not info_logs:
+    for log_type, app_name, _, action, duration in log_entries:
+        if log_type == 'INFO' and app_name not in ['SYSTEM', ''] and duration is not None:
+            app_logs[app_name].append(duration)
+
+    if not any(app_logs.values()):
         print("No relevant INFO logs found.")
         return
 
-    durations = [duration for _, _, duration in info_logs]
-    average_time = sum(durations) / len(durations)
-
-    print(f"\nAverage Successful Run Time: {average_time:.2f} ms")
-
+    print("\nAverage Successful Run Time:")
+    for app_name, durations in app_logs.items():
+        if durations:
+            average_time = sum(durations) / len(durations)
+            print(f"{app_name}: {average_time:.2f} ms")
 
 #req3
 def count_failures(log_entries):
@@ -117,6 +120,7 @@ def most_successful_app(log_entries):
     print(f"\nApp with the most successful runs:")
     print(f"{most_successful_app}: {most_successful_count//2} successful runs")
 
+#req6
 def most_failed_third_of_day(log_entries):
     thirds_counts = {'00:00:00-07:59:59': 0, '08:00:00-15:59:59': 0, '16:00:00-23:59:59': 0}
 
@@ -135,7 +139,7 @@ def most_failed_third_of_day(log_entries):
     print(f"\nThird of the day with the most failed runs:")
     print(f"{most_failed_third}: {most_failed_third_count} failures")
 
-#req6
+#req7
 def longest_shortest_successful_run_times(log_entries):
     successful_runs = [(time, app_name, duration) for log_type, app_name, time, _, duration in log_entries
                        if log_type == 'INFO' and duration is not None]
@@ -151,7 +155,7 @@ def longest_shortest_successful_run_times(log_entries):
     print(f"\nLongest Run: {longest_run[1]} {longest_run[0]} {longest_run[2]}ms")
     print(f"Shortest Run: {shortest_run[1]} {shortest_run[0]} {shortest_run[2]}ms")
 
-#req7
+#req8
 def most_active_hour_by_app_and_log_type(log_entries):
     # Dictionary to store counts for each hour, app, and log type combination
     activity_counts = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
@@ -171,9 +175,25 @@ def most_active_hour_by_app_and_log_type(log_entries):
 
             print(f"Hour={start_time}-{end_time}, App={app_name}, Log Type={log_type}, Count={log_counts[max_hour]}")
 
+#req9
+def calculate_failure_rate(log_entries):
+    # Dictionary to store counts for each app and log type combination
+    log_counts = defaultdict(lambda: defaultdict(int))
 
+    for log_type, app_name, _, _, _ in log_entries:
+        log_counts[app_name][log_type] += 1
 
+    print("\nFailure Rate Percentage by App Type:")
+    for app_name in sorted(set(entry[1] for entry in log_entries)):
+        error_count = log_counts[app_name]['ERROR'] if 'ERROR' in log_counts[app_name] else 0
+        total_logs = sum(log_counts[app_name].values())
 
+        if total_logs > 0:
+            failure_rate = (error_count / total_logs) * 100
+        else:
+            failure_rate = 0
+
+        print(f"App={app_name}, Failure Rate={failure_rate:.2f}%")
 
 def main():
     filename = 'output.txt'
@@ -187,7 +207,9 @@ def main():
     most_failed_third_of_day(log_entries)
     longest_shortest_successful_run_times(log_entries)
     most_active_hour_by_app_and_log_type(log_entries)
-
+    calculate_failure_rate(log_entries)
+"""
+    Prints the data extraced from the file
     print("Log Entries:")
     if not log_entries:
         print("No log entries found.")
@@ -201,7 +223,7 @@ def main():
                 print(f"{log_type} {app_name} {time} {duration}ms {action}" )
             else:
                 print(f"{log_type} {app_name} {time} {action}")
-
+"""
 
 if __name__ == "__main__":
     main()
