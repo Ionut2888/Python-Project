@@ -1,0 +1,6 @@
+README.md
+setup.py
+Log_Parser_ARI.egg-info/PKG-INFO
+Log_Parser_ARI.egg-info/SOURCES.txt
+Log_Parser_ARI.egg-info/dependency_links.txt
+Log_Parser_ARI.egg-info/top_level.txt
