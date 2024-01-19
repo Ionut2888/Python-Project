@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='Log_Parser_ARI',
-    version='0.1',
+    name='LogsParserAIR',
+    version='0.3',
     packages=find_packages(),
     install_requires=[]
 )
