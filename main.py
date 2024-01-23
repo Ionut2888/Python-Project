@@ -1,5 +1,6 @@
 import re
 from collections import defaultdict
+import os
 
 
 def parse_log(line):
@@ -30,7 +31,9 @@ def parse_log(line):
 def count_logs(filename):
     log_entries = []
     errors = ""
-    with open(filename, 'r') as file:
+    cwd = os.getcwd()
+    file_path = os.path.join(cwd, filename)
+    with open(file_path, 'r') as file:
         for line_number, line in enumerate(file, 1):
             time, log_type, app_name, action, duration = parse_log(line)
             if time:

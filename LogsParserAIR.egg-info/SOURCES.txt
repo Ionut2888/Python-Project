@@ -1,6 +1,0 @@
-README.md
-setup.py
-LogsParserAIR.egg-info/PKG-INFO
-LogsParserAIR.egg-info/SOURCES.txt
-LogsParserAIR.egg-info/dependency_links.txt
-LogsParserAIR.egg-info/top_level.txt
